@@ -1,0 +1,76 @@
+enum SysStaffStatus {
+  active
+  inactive
+  on_leave
+  terminated
+}
+
+enum Sex {
+  male
+  female
+}
+
+type SysStaff {
+  id: ID!
+  accountId: ID!
+  branchId: ID!
+  name: String!
+  sex: Sex!
+  position: String!
+  contactNumber: String
+  email: String
+  status: SysStaffStatus!
+  hireDate: String!
+  terminationDate: String
+  notes: String
+  createdAt: Float!
+  updatedAt: Float!
+}
+
+input SysStaffInput {
+  name: String!
+  position: String!
+  contactNumber: String
+  email: String
+  status: SysStaffStatus
+  hireDate: String!
+}
+
+input SysStaffUpdateInput {
+  name: String
+  position: String
+  contactNumber: String
+  email: String
+  status: SysStaffStatus
+}
+
+input SysStaffFilter {
+  name: String
+  position: String
+  status: SysStaffStatus
+  hireDateFrom: String
+  hireDateTo: String
+}
+
+input PaginationInput {
+  page: Int!
+  pageSize: Int!
+}
+
+type SysStaffPage {
+  items: [SysStaff!]!
+  total: Int!
+  page: Int!
+  pageSize: Int!
+}
+
+type Query {
+  sysStaffs(filter: SysStaffFilter, pagination: PaginationInput): SysStaffPage!
+  sysStaff(id: ID!): SysStaff
+}
+
+type Mutation {
+  createSysStaff(input: SysStaffInput!): SysStaff!
+  updateSysStaff(id: ID!, input: SysStaffUpdateInput!): SysStaff!
+  deleteSysStaff(id: ID!): Boolean!
+}

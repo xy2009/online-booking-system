@@ -1,0 +1,97 @@
+enum BookingStatus {
+  pending
+  confirmed
+  cancelled
+  completed
+  no_show
+}
+
+enum BookingType {
+  online
+  phone
+  in_person
+}
+
+enum BookingAction {
+  create
+  confirm
+  cancel
+  complete
+  no_show
+  # 默认值
+  update
+}
+
+type BookingMaintenance {
+  id: ID!
+  action: BookingAction!
+  performedBy: String!
+  performedAt: String!
+  notes: String
+}
+
+type Booking {
+  id: ID!
+  userId: ID!
+  tableId: ID
+  bookingTime: Float!
+  numberOfPeople: Int!
+  status: BookingStatus!
+  specialRequests: String
+  createdAt: Float!
+  updatedAt: Float!
+  isDeleted: Boolean
+# 默认为 'online'
+  bookingType: BookingType
+  maintenanceLogs: [BookingMaintenance!]
+}
+
+input BookingInput {
+  userId: ID!
+  bookingTime: Float!
+  tableId: ID
+  numberOfPeople: Int!
+  status: BookingStatus
+  specialRequests: String
+}
+
+input BookingUpdateInput {
+  tableId: ID
+  bookingTime: Float
+  numberOfPeople: Int
+  status: BookingStatus
+  specialRequests: String
+  isDeleted: Boolean
+}
+
+input BookingFilter {
+  userId: ID
+  tableId: ID
+  status: BookingStatus
+  bookingTimeFrom: String
+  bookingTimeTo: String
+  isDeleted: Boolean
+}
+
+input PaginationInput {
+  page: Int!
+  pageSize: Int!
+}
+
+type BookingPage {
+  items: [Booking!]!
+  total: Int!
+  page: Int!
+  pageSize: Int!
+}
+
+type Query {
+  bookings(filter: BookingFilter, pagination: PaginationInput): BookingPage!
+  booking(id: ID!): Booking
+}
+
+type Mutation {
+  createBooking(input: BookingInput!): Booking!
+  updateBooking(id: ID!, input: BookingUpdateInput!): Booking!
+  deleteBooking(id: ID!): Boolean!
+}

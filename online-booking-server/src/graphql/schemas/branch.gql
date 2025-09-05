@@ -1,0 +1,74 @@
+enum BranchStatus {
+  active
+  inactive
+  deleted
+}
+
+type BranchMaintenance {
+  id: ID!
+  accountId: String!
+  backUp: String!
+  performedAt: Float!
+}
+
+type Branch {
+  id: ID!
+  name: String!
+  address: String!
+  contactNumber: String!
+  openTime: String!
+  closeTime: String!
+  description: String
+  status: BranchStatus!
+  createdAt: Float!
+  updatedAt: Float!
+  maintenanceLogs: [BranchMaintenance!]
+}
+
+input CreateBranchInput {
+  name: String!
+  address: String!
+  contactNumber: String!
+  status: BranchStatus
+  openTime: String!
+  closeTime: String!
+  description: String
+}
+
+input UpdateBranchInput {
+  name: String
+  address: String
+  contactNumber: String
+  openTime: String
+  closeTime: String
+  description: String
+  status: BranchStatus
+}
+
+input BranchFilterInput {
+  name: String
+  status: BranchStatus
+}
+
+input PaginationInput {
+  page: Int!
+  pageSize: Int!
+}
+
+type BranchPage {
+  items: [Branch!]!
+  total: Int!
+  page: Int!
+  pageSize: Int!
+}
+
+type Query {
+  branches(filter: BranchFilterInput, pagination: PaginationInput): BranchPage!
+  branch(id: ID!): Branch
+}
+
+type Mutation {
+  createBranch(input: CreateBranchInput!): Branch!
+  updateBranch(id: ID!, input: UpdateBranchInput!): Branch!
+  deleteBranch(id: ID!): Boolean!
+}

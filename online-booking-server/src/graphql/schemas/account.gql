@@ -1,0 +1,70 @@
+enum Role {
+  customer
+  staff
+  admin
+}
+
+enum AccountStatus {
+  active
+  inactive
+  banned
+  deleted
+}
+
+type Account {
+  id: ID!
+  mobile: String!
+  role: Role!
+  status: AccountStatus!
+  username: String
+  createdAt: Float!
+  updatedAt: Float!
+  lastLogin: Float
+  issuer: String
+  userId: String
+}
+
+input AccountInput {
+  mobile: String!
+  password: String!
+  role: Role
+  status: AccountStatus
+  username: String
+}
+
+input AccountUpdateInput {
+  password: String
+  status: AccountStatus
+  username: String
+}
+
+input AccountFilter {
+  mobile: String
+  role: Role
+  status: AccountStatus
+  createdFrom: Float
+  createdTo: Float
+}
+
+type AccountPage {
+  items: [Account!]!
+  total: Int!
+  page: Int!
+  pageSize: Int!
+}
+
+type Query {
+  accounts(filter: AccountFilter, pagination: PaginationInput): AccountPage!
+  account(id: ID!): Account
+}
+
+type Mutation {
+  createAccount(input: AccountInput!): Account!
+  updateAccount(id: ID!, input: AccountUpdateInput!): Account!
+  deleteAccount(id: ID!): Boolean!
+}
+
+input PaginationInput {
+  page: Int!
+  pageSize: Int!
+}

@@ -1,0 +1,46 @@
+type Profile {
+  id: ID!
+  accountId: ID!
+  nickName: String!
+  avatarUrl: String
+  createdAt: Float!
+  updatedAt: Float!
+}
+
+input ProfileInput {
+  nickName: String!
+  avatarUrl: String
+}
+
+input ProfileUpdateInput {
+  nickName: String
+  avatarUrl: String
+}
+
+input ProfileFilter {
+  userId: String
+  accountId: String
+}
+
+input PaginationInput {
+  page: Int!
+  pageSize: Int!
+}
+
+type ProfilePage {
+  items: [Profile!]!
+  total: Int!
+  page: Int!
+  pageSize: Int!
+}
+
+type Query {
+  profiles(filter: ProfileFilter, pagination: PaginationInput): ProfilePage!
+  profile(id: ID!): Profile
+}
+
+type Mutation {
+  createProfile(input: ProfileInput!): Profile!
+  updateProfile(id: ID!, input: ProfileUpdateInput!): Profile!
+  deleteProfile(id: ID!): Boolean!
+}

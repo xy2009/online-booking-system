@@ -1,0 +1,118 @@
+enum TableStatus {
+  free
+  reserved
+  booked
+  confirmed
+  occupied
+  cleaning
+  maintenance
+  unavailable
+}
+
+enum TableLocation {
+  indoor
+  outdoor
+  private
+}
+
+type Table {
+  id: ID!
+  # 所属分店ID
+  branchId: String!
+  # 餐桌代号（建议为唯一索引）
+  name: String!
+  # 可容纳人数（可建索引用于筛选）
+  size: Int!
+  # 最大可容纳人数
+  maxSize: Int
+  # 餐桌当前状态（可建索引用于筛选），仅针对当前时间点状态
+  status: TableStatus!
+  # 餐桌位置类型
+  location: TableLocation
+  # 备注描述
+  description: String
+  # 标签
+  tags: [String!]
+  createdAt: Float!
+  updatedAt: Float!
+  turntableCycle: Int
+  lastOccupiedAt: Float
+  lastCleanedAt: Float
+  createdBy: String
+  updatedBy: String
+}
+
+input TableFilterInput {
+  branchId: String
+  status: TableStatus
+  location: TableLocation
+  size: Int
+  name: String
+  minSize: Int
+  maxSize: Int
+}
+
+input TableBookingFilterInput {
+  branchId: String!
+  startTime: Float!
+  size: Int
+  location: TableLocation
+  name: String
+  minSize: Int
+  maxSize: Int
+}
+
+input PaginationInput {
+  page: Int!      # 页码，从1开始
+  pageSize: Int!  # 每页数量
+}
+
+type TablePage {
+  items: [Table!]!
+  total: Int!
+  page: Int!
+  pageSize: Int!
+}
+
+type Query {
+  # 分页查询餐桌列表，支持条件筛选
+  tables(filter: TableFilterInput, pagination: PaginationInput): TablePage
+  # 查询某个时间段内可用餐桌列表，支持条件筛选
+  availableTables(filter: TableBookingFilterInput, pagination: PaginationInput): TablePage
+  # 查询单个餐桌
+  table(id: ID!): Table
+}
+
+type Mutation {
+  createTable(input: CreateTableInput!): Table!
+  updateTable(id: ID!, input: UpdateTableInput!): Table!
+  deleteTable(id: ID!): Boolean!
+}
+
+input CreateTableInput {
+  branchId: String!
+  name: String!
+  size: Int!
+  maxSize: Int
+  status: TableStatus
+  turntableCycle: Int!
+  location: TableLocation
+  description: String
+  tags: [String!]
+}
+
+input UpdateTableInput {
+  name: String
+  size: Int
+  maxSize: Int
+  status: TableStatus
+  location: TableLocation
+  turntableCycle: Int!
+  description: String
+  tags: [String!]
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+}

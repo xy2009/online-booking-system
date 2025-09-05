@@ -1,0 +1,57 @@
+enum SysConfigType {
+  system
+  payment
+  notification
+  other
+}
+
+type SysConfig {
+  id: ID!
+  key: String!
+  value: String!
+  description: String
+  configType: SysConfigType!
+  createdAt: Float!
+  updatedAt: Float!
+}
+
+input SysConfigInput {
+  key: String!
+  value: String!
+  description: String
+  configType: SysConfigType!
+}
+
+input SysConfigUpdateInput {
+  value: String
+  description: String
+  configType: SysConfigType
+}
+
+input SysConfigFilter {
+  key: String
+  configType: SysConfigType
+}
+
+type SysConfigPage {
+  items: [SysConfig!]!
+  total: Int!
+  page: Int!
+  pageSize: Int!
+}
+
+type Query {
+  sysConfigs(filter: SysConfigFilter, pagination: PaginationInput): SysConfigPage!
+  sysConfig(id: ID!): SysConfig
+}
+
+type Mutation {
+  createSysConfig(input: SysConfigInput!): SysConfig!
+  updateSysConfig(id: ID!, input: SysConfigUpdateInput!): SysConfig!
+  deleteSysConfig(id: ID!): Boolean!
+}
+
+input PaginationInput {
+  page: Int!
+  pageSize: Int!
+}
