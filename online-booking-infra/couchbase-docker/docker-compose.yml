@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  couchbase:
+    image: couchbase:community-7.2.4
+    container_name: couchbase
+    ports:
+      - 8091-8096:8091-8096 # Web UI, Query, Index, Search, Analytics
+      - 11210:11210         # Data node
+    volumes:
+      - ./data:/opt/couchbase/var
+      - ./init:/docker-entrypoint-initdb.d:ro
+    environment:
+      - COUCHBASE_ADMINISTRATOR_USERNAME=${COUCHBASE_ADMINISTRATOR_USERNAME:-admin}
+      - COUCHBASE_ADMINISTRATOR_PASSWORD=${COUCHBASE_ADMINISTRATOR_PASSWORD:-admin123}
+    restart: unless-stopped
