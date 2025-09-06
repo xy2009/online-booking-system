@@ -80,15 +80,17 @@ export const tableResolves: Resolvers = {
                 size: size || 1,
                 sizeMin: size,
             };
-            logger.info(`Finding available tables for branchId: ${branchId}, filter: ${JSON.stringify(saveFilter)}, pagination: ${page}/${pageSize}, user: ${context?.user.id}`);
+            logger.info(`Finding available tables for branchId: ${branchId}, filter: ${JSON.stringify(saveFilter)}, pagination: ${page}/${pageSize}, user: ${context?.user?.id}`);
             // Call the service to find available tables
             const tables = await findTables(branchId, saveFilter, page, pageSize);
             // For simplicity, assuming all 'free' tables are available
             const availableTables = tables.items;
             // Map fields to match generated GraphQL Table type, especially nullable enums
-            const mappedTables = availableTables.map((table: any) => ({
-                ...table,
-            }));
+            const mappedTables = availableTables.filter((table: any) => {
+                if (!['maintenance', 'unavailable'].includes(table?.status)){
+                    return {...table, status: TableStatus.Unavailable};
+                }
+            });
             // Return as TablePage type
             return {
                 items: mappedTables as Table[],

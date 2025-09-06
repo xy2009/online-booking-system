@@ -24,6 +24,7 @@ const dailyRotateTransport = new DailyRotateFile({
 
 export const logger = winston.createLogger({
   level: logLevel,
+  
   format: winston.format.combine(
     winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss.SSS' }),
     winston.format.printf(({ timestamp, level, message, ...meta }) => {

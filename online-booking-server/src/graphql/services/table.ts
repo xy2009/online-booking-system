@@ -270,7 +270,6 @@ export const availableTables = async (
   const bookingCollectionFullName = CouchbaseDB.getCollectionFullName(tableScop, bookingCollection);
   const defaultTurntableCycle = 150; // 默认翻台周期，单位分钟
   
-
   // 1. 计算目标时间段
   const startTime = filter.startTime; // 预订时间（毫秒）
   if (!startTime) throw AppError.paramsError("startTime is required");
@@ -281,9 +280,10 @@ export const availableTables = async (
   const endOfDay = date.getTime();
 
   // 2. 查询所有符合条件的桌子（排除 maintenance/unavailable）
+  const unavailableStatuses = ['maintenance', 'unavailable'];
   const tableWhere: string[] = [
     "branchId = $branchId",
-    "status NOT IN ['maintenance', 'unavailable']"
+    `status NOT IN ${unavailableStatuses}`
   ];
   const tableParams: Record<string, any> = { branchId };
 
@@ -311,9 +311,17 @@ export const availableTables = async (
     FROM ${tableCollectionFullName}
     ${tableWhereClause}
   `;
+  console.log('tableWhereClause:', tableWhereClause);
+  console.log('tableSql:', tableSql);
   const tableResult = await CouchbaseDB.query(tableSql, { parameters: tableParams });
-  console.log('Table SQL:', tableSql, 'Params:', tableParams);
-  const allTables: Table[] = tableResult.rows.map((row: any) => row[tableCollection] || row);
+  console.log('Table SQL Params:', tableParams);
+
+  // 过滤掉 maintenance/unavailable 状态的桌子
+  const allTables: Table[] = tableResult.rows.map((row: any) => {
+    if (!unavailableStatuses.includes(row?.status)){
+      return {...row};
+    }
+  });
 
   if (allTables.length === 0) {
     return { total: 0, items: [], page, pageSize };

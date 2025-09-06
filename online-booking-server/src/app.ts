@@ -69,14 +69,10 @@ app.use(authMiddleware);
 // 需要认证的路由
 app.use("/api", protectedRouter);
 
-
 // 根据环境加载不同配置（示例）
-if (process.env.NODE_ENV) {
-  logger.info(`Current environment: ${process.env.NODE_ENV}`);
-}
-if (process.env.DB_URL) {
-  logger.info(`Database URL: ${process.env.DB_URL}`);
-}
+// if (process.env.NODE_ENV) {
+//   logger.info(`Current environment: ${process.env.NODE_ENV}`);
+// }
 
 // Global error handler
 app.use(

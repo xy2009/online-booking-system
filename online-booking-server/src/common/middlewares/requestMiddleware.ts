@@ -12,6 +12,7 @@ const PARTIAL_MASK_FIELDS = ['mobile', 'phone', 'tel'];
 
 export const requestLogger = (req: Request, res: Response, next: NextFunction) => {
   const start = Date.now();
+  console.log('=============request =============\n', res);
   res.on('finish', () => {
     const duration = Date.now() - start;
     
@@ -42,6 +43,7 @@ export const requestLogger = (req: Request, res: Response, next: NextFunction) =
     } else {
       logger.info(logMsg, meta);
     }
+    
     console.log('=============request finish=============\n', res.status, meta);
   });
   next();

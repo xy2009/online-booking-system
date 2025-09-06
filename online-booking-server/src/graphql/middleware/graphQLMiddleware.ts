@@ -15,6 +15,8 @@ import { typeDefs } from "../schemas";
 import { resolvers } from "../resolvers";
 import { permissions } from "./permissionMiddleware";
 
+const isDev = process.env.NODE_ENV === "development";
+
 const app = express();
 
 const httpServer = http.createServer(app);
@@ -50,6 +52,8 @@ const detailedLoggingPlugin = {
       async willSendResponse({ response }: any) {
         const totalDuration = Date.now() - startTime;
         console.log(`[${requestId}] 📤 Sending response (${totalDuration}ms)`);
+
+        console.log(`[${requestId}] Response data:`, JSON.stringify(response.data, null, 2));
         
         if (response.errors && response.errors.length > 0) {
           console.log(`[${requestId}] ❌ Response contains ${response.errors.length} error(s):`);
@@ -95,14 +99,20 @@ export const createGraphQLMiddleware = async (): Promise<RequestHandler> => {
     // debug: process.env.NODE_ENV === 'development', // 仅在开发环境启用调试
     plugins: [
       ApolloServerPluginDrainHttpServer({ httpServer }), // 必需插件
-      // detailedLoggingPlugin, // 使用已定义的插件
+      detailedLoggingPlugin, // 使用已定义的插件
       nullCheckPlugin        // 添加 null 检查插件
     ],
     formatError: (formattedError) => {
+      const { message, locations, path, extensions } = formattedError;
       console.log('📋 Formatted error details:');
-      console.log('Message:', formattedError.message);
-      console.log('Path:', formattedError.path);
-      console.log('Extensions:', formattedError.extensions);
+      console.log('Message:', message);
+      console.log('Path:', path);
+      console.log('Extensions:', extensions);
+      if (!isDev) {
+        // 在生产环境中隐藏详细错误信息
+        // 只返回 message，隐藏 path 和 extensions
+        return { message, locations, path };
+      }
       return formattedError;
     }
   });
