@@ -1,0 +1,9 @@
+{
+  "name": "@booking/shared-ui",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "src/index.js",
+  "dependencies": {
+    "solid-js": "^1.9.5"
+  }
+}

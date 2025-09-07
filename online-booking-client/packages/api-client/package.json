@@ -1,0 +1,11 @@
+{
+  "name": "@booking/api-client",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "src/index.js",
+  "dependencies": {
+    "@urql/core": "^4.0.0",
+    "graphql": "^16.8.0",
+    "@booking/shared-utils": "file:../../packages/shared-utils"
+  }
+}

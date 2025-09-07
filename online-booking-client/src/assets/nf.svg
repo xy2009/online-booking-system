@@ -1,0 +1,18 @@
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <!-- 圆形背景 -->
+  <circle cx="16" cy="16" r="14" fill="#FF6B6B"/>
+  
+  <!-- 餐具组 - 白色 -->
+  <g stroke="#ffffff" stroke-width="1.8" fill="none" stroke-linecap="round">
+    <!-- 叉子 -->
+    <path d="M10 12v11M8 16h4M8 19h4M8 22h4"/>
+    
+    <!-- 刀子 -->
+    <path d="M16 12v11"/>
+    <path d="M16 12l2.5-1.2"/>
+    
+    <!-- 勺子 -->
+    <path d="M22 12v10"/>
+    <path d="M20.5 22c1.2 0 2.5-0.7 2.5-2"/>
+  </g>
+</svg>

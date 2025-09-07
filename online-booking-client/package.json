@@ -1,0 +1,29 @@
+{
+  "name": "online-booking-system",
+  "version": "1.0.0",
+  "description": "在线预订餐桌系统",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"pnpm dev:customer\" \"pnpm dev:admin\"",
+    "dev:customer": "pnpm --filter customer dev -- --host",
+    "dev:admin": "pnpm --filter admin dev",
+    "build": "pnpm -r build",
+    "build:customer": "pnpm --filter customer build",
+    "build:admin": "pnpm --filter admin build",
+    "clean": "pnpm -r clean",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.0",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "dependencies": {
+    "solid-toast": "^0.5.0"
+  }
+}

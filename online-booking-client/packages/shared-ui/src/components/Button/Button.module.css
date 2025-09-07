@@ -1,0 +1,141 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  font-family: inherit;
+  text-decoration: none;
+  outline: none;
+}
+
+.button:focus {
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+}
+
+/* Variants */
+.primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.primary:hover:not(.disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.secondary {
+  background: #f3f4f6;
+  color: #374151;
+  border: 1px solid #d1d5db;
+}
+
+.secondary:hover:not(.disabled) {
+  background: #e5e7eb;
+  border-color: #9ca3af;
+}
+
+.outline {
+  background: transparent;
+  color: #667eea;
+  border: 2px solid #667eea;
+}
+
+.outline:hover:not(.disabled) {
+  background: #667eea;
+  color: white;
+}
+
+.danger {
+  background: #ef4444;
+  color: white;
+}
+
+.danger:hover:not(.disabled) {
+  background: #dc2626;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+.success {
+  background: #10b981;
+  color: white;
+}
+
+.success:hover:not(.disabled) {
+  background: #059669;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+/* Sizes */
+.small {
+  padding: 8px 16px;
+  font-size: 14px;
+  min-height: 32px;
+}
+
+.medium {
+  padding: 12px 24px;
+  font-size: 16px;
+  min-height: 40px;
+}
+
+.large {
+  padding: 16px 32px;
+  font-size: 18px;
+  min-height: 48px;
+}
+
+/* States */
+.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.hidden {
+  opacity: 0;
+}
+
+/* Loading spinner */
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 8px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Full width */
+.button.fullWidth {
+  width: 100%;
+}
+
+/* Icon button */
+.button.iconOnly {
+  padding: 8px;
+  min-width: 40px;
+}
+
+.button.iconOnly.small {
+  padding: 6px;
+  min-width: 32px;
+}
+
+.button.iconOnly.large {
+  padding: 12px;
+  min-width: 48px;
+}

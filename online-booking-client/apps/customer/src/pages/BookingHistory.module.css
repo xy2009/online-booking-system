@@ -1,0 +1,339 @@
+.container {
+  min-height: 100vh;
+  background-color: #f8fafc;
+}
+
+.header {
+  background: white;
+  padding: 16px 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.backButton {
+  background: none;
+  border: none;
+  color: #667eea;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.backButton:hover {
+  background-color: #f7fafc;
+}
+
+.header h1 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a202c;
+  margin: 0;
+}
+
+.content {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px 20px;
+}
+
+.filters {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.filterButton {
+  padding: 8px 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 20px;
+  background: white;
+  color: #4a5568;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.filterButton:hover {
+  border-color: #cbd5e0;
+}
+
+.filterButton.active {
+  border-color: #667eea;
+  background-color: #667eea;
+  color: white;
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: #718096;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e2e8f0;
+  border-top: 4px solid #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: #718096;
+}
+
+.emptyIcon {
+  font-size: 64px;
+  margin-bottom: 16px;
+}
+
+.empty h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0 0 8px 0;
+}
+
+.empty p {
+  font-size: 16px;
+  margin: 0 0 24px 0;
+}
+
+.bookingList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.bookingCard {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.bookingCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.bookingHeader {
+  padding: 20px 20px 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.storeName {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a202c;
+  margin: 0;
+  flex: 1;
+}
+
+.status {
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.statusPending {
+  background-color: #fef5e7;
+  color: #d69e2e;
+}
+
+.statusConfirmed {
+  background-color: #e6fffa;
+  color: #38b2ac;
+}
+
+.statusCancelled {
+  background-color: #fed7d7;
+  color: #e53e3e;
+}
+
+.statusCompleted {
+  background-color: #f0fff4;
+  color: #38a169;
+}
+
+.statusNoShow {
+  background-color: #edf2f7;
+  color: #718096;
+}
+
+.bookingDetails {
+  padding: 16px 20px;
+}
+
+.detailRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #f7fafc;
+}
+
+.detailRow:last-child {
+  border-bottom: none;
+}
+
+.label {
+  color: #718096;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.value {
+  color: #1a202c;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: right;
+}
+
+.bookingActions {
+  padding: 16px 20px 20px 20px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.phoneButton {
+  color: #667eea;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+  flex: 1;
+  text-align: center;
+  border: 1px solid #e2e8f0;
+}
+
+.phoneButton:hover {
+  background-color: #f7fafc;
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .header {
+    padding: 12px 16px;
+  }
+  
+  .content {
+    padding: 20px 16px;
+  }
+  
+  .filters {
+    gap: 6px;
+    margin-bottom: 20px;
+  }
+  
+  .filterButton {
+    padding: 6px 12px;
+    font-size: 16px;
+  }
+  
+  .bookingCard {
+    border-radius: 8px;
+  }
+  
+  .bookingHeader {
+    padding: 16px 16px 12px 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .storeName {
+    font-size: 24px;
+  }
+  
+  .bookingDetails {
+    padding: 12px 16px;
+  }
+  
+  .detailRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 6px 0;
+  }
+  
+  .value {
+    text-align: left;
+    font-weight: 400;
+  }
+  
+  .bookingActions {
+    padding: 12px 16px 16px 16px;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .phoneButton {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .filters {
+    gap: 4px;
+  }
+  
+  .filterButton {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+  
+  .empty {
+    padding: 40px 16px;
+  }
+  
+  .emptyIcon {
+    font-size: 48px;
+  }
+  
+  .empty h3 {
+    font-size: 18px;
+  }
+  
+  .empty p {
+    font-size: 16px;
+  }
+}
+
+.bookingTimeValue {
+  color: #1e293b;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-shadow: #667eea;
+}
