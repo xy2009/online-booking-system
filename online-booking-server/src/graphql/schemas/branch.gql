@@ -15,6 +15,7 @@ type Branch {
   id: ID!
   name: String!
   address: String!
+  contactName: String!
   contactNumber: String!
   openTime: String!
   closeTime: String!
@@ -28,6 +29,7 @@ type Branch {
 input CreateBranchInput {
   name: String!
   address: String!
+  contactName: String!
   contactNumber: String!
   status: BranchStatus
   openTime: String!
@@ -38,6 +40,7 @@ input CreateBranchInput {
 input UpdateBranchInput {
   name: String
   address: String
+  contactName: String
   contactNumber: String
   openTime: String
   closeTime: String

@@ -468,6 +468,12 @@ export const loginAccount = async (params: ILoginParams) => {
   const account = await getAccountByMobile(mobile);
   if (!account) throw AppError.notFound("this account does not exist");
 
+  // admin client cannot be used for non-admin accounts
+  if (!['admin', 'staff'].includes(account.role) && clientId === _getConfigByKey_(EnvKeys.ADMIN_CLIENT_ID, 3)) {
+    logger.warn(`Account  mobile: [${mobile}] is not allowed to use admin client, role [${account.role}]`);
+    throw AppError.forbidden("This account is undefined or this system cannot be used for this account, please contact support!");
+  }
+
   if (type === "phone") {
     if (!password) throw AppError.paramsError("missing password");
     const ok = await bcrypt.compare(password, account.password);

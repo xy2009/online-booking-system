@@ -10,6 +10,7 @@ let b_token: string;
 let sys_client_id: string;
 let bookingId: string;
 let userId: string;
+let branchId = "fe46faa4-98ae-4603-a050-44ae2a4a4345";
 let tableId = "5c8eef19-47ad-4365-90b6-3be1d01dd2bf";
 // 默认预订时间为第2天 上午11点，避免和工作时间冲突，默认工作时间为10点到22点
 let bookingTime = new Date(new Date().setHours(14, 0, 0, 0) + 48 * 60 * 60 * 1000).getTime();
@@ -38,6 +39,7 @@ describe(`${moduleName}:`, () => {
             createBooking(input: $input) {
               id
               userId
+              branchId
               tableId
               bookingTime
               numberOfPeople
@@ -46,17 +48,23 @@ describe(`${moduleName}:`, () => {
               createdAt
               updatedAt
               isDeleted
-              bookingType
+              bookingType,
+              connectName,
+              connectPhone
             }
           }`,
         variables: {
           input: {
             userId,
             tableId,
+            branchId,
             bookingTime: bookingTime,
             numberOfPeople: 6,
             status: "pending",
-            specialRequests: "无"
+            specialRequests: "无",
+            connectName: "张三",
+            connectPhone: "13100001111"
+          //  bookingType: "online" // 可选，默认为 'online'
           }
         }
       });
@@ -84,6 +92,7 @@ describe(`${moduleName}:`, () => {
             createBooking(input: $input) {
               id
               userId
+              branchId
               tableId
               bookingTime
               numberOfPeople
@@ -93,16 +102,21 @@ describe(`${moduleName}:`, () => {
               updatedAt
               isDeleted
               bookingType
+              connectName,
+              connectPhone
             }
           }`,
         variables: {
           input: {
             userId,
             tableId,
+            branchId,
             bookingTime: bookingTime,
             numberOfPeople: 3,
             status: "pending",
-            specialRequests: "1345"
+            specialRequests: "1345",
+            connectName: "张三",
+            connectPhone: "13100001111"
           }
         }
       });
@@ -126,6 +140,7 @@ describe(`${moduleName}:`, () => {
             createBooking(input: $input) {
               id
               userId
+              branchId
               tableId
               bookingTime
               numberOfPeople
@@ -135,14 +150,19 @@ describe(`${moduleName}:`, () => {
               updatedAt
               isDeleted
               bookingType
+              connectName,
+              connectPhone
             }
           }`,
         variables: {
           input: {
             userId,
+            branchId,
             bookingTime: bookingTime + 20 * 60 * 1000, // 推迟240分钟，避免冲突
             numberOfPeople: 8,
-            status: "pending"
+            status: "pending",
+            connectName: "张三",
+            connectPhone: "13100001111"
           }
         }
       });

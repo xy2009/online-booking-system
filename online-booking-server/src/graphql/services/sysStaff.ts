@@ -98,6 +98,14 @@ export const updateSysStaff = async (
   const updatedStaff: SysStaff = {
     ...staff,
     ...updateData,
+    name: updateData.name || staff.name,
+    position: updateData.position || staff.position,
+    contactNumber: updateData.contactNumber || staff.contactNumber,
+    email: updateData.email || staff.email,
+    status: updateData.status || staff.status,
+    createdAt: staff.createdAt,
+    updatedAt: now,
+    type: staffCollection,
   };
 
   await CouchbaseDB.upsert(businessScope, staffCollection, key, updatedStaff);

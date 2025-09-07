@@ -71,6 +71,9 @@ export type Booking = {
   __typename?: 'Booking';
   bookingTime: Scalars['Float']['output'];
   bookingType?: Maybe<BookingType>;
+  branchId: Scalars['ID']['output'];
+  connectName?: Maybe<Scalars['String']['output']>;
+  connectPhone?: Maybe<Scalars['String']['output']>;
   createdAt: Scalars['Float']['output'];
   id: Scalars['ID']['output'];
   isDeleted?: Maybe<Scalars['Boolean']['output']>;
@@ -103,6 +106,10 @@ export type BookingFilter = {
 
 export type BookingInput = {
   bookingTime: Scalars['Float']['input'];
+  bookingType?: InputMaybe<BookingType>;
+  branchId: Scalars['ID']['input'];
+  connectName?: InputMaybe<Scalars['String']['input']>;
+  connectPhone?: InputMaybe<Scalars['String']['input']>;
   numberOfPeople: Scalars['Int']['input'];
   specialRequests?: InputMaybe<Scalars['String']['input']>;
   status?: InputMaybe<BookingStatus>;
@@ -143,6 +150,8 @@ export enum BookingType {
 
 export type BookingUpdateInput = {
   bookingTime?: InputMaybe<Scalars['Float']['input']>;
+  connectName?: InputMaybe<Scalars['String']['input']>;
+  connectPhone?: InputMaybe<Scalars['String']['input']>;
   isDeleted?: InputMaybe<Scalars['Boolean']['input']>;
   numberOfPeople?: InputMaybe<Scalars['Int']['input']>;
   specialRequests?: InputMaybe<Scalars['String']['input']>;
@@ -154,6 +163,7 @@ export type Branch = {
   __typename?: 'Branch';
   address: Scalars['String']['output'];
   closeTime: Scalars['String']['output'];
+  contactName: Scalars['String']['output'];
   contactNumber: Scalars['String']['output'];
   createdAt: Scalars['Float']['output'];
   description?: Maybe<Scalars['String']['output']>;
@@ -195,6 +205,7 @@ export enum BranchStatus {
 export type CreateBranchInput = {
   address: Scalars['String']['input'];
   closeTime: Scalars['String']['input'];
+  contactName: Scalars['String']['input'];
   contactNumber: Scalars['String']['input'];
   description?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
@@ -672,6 +683,7 @@ export enum TableStatus {
 export type UpdateBranchInput = {
   address?: InputMaybe<Scalars['String']['input']>;
   closeTime?: InputMaybe<Scalars['String']['input']>;
+  contactName?: InputMaybe<Scalars['String']['input']>;
   contactNumber?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
@@ -895,6 +907,9 @@ export type AccountPageResolvers<ContextType = any, ParentType extends Resolvers
 export type BookingResolvers<ContextType = any, ParentType extends ResolversParentTypes['Booking'] = ResolversParentTypes['Booking']> = {
   bookingTime?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   bookingType?: Resolver<Maybe<ResolversTypes['BookingType']>, ParentType, ContextType>;
+  branchId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  connectName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  connectPhone?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   isDeleted?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
@@ -928,6 +943,7 @@ export type BookingPageResolvers<ContextType = any, ParentType extends Resolvers
 export type BranchResolvers<ContextType = any, ParentType extends ResolversParentTypes['Branch'] = ResolversParentTypes['Branch']> = {
   address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   closeTime?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  contactName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   contactNumber?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;

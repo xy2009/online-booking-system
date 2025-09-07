@@ -8,6 +8,7 @@ import AppError from "../../common/errors";
 import omit from "lodash/omit";
 import { IAccountResponse } from "src/entities/accountEntity";
 import { isSystemStaff } from "../middleware/permissionMiddleware";
+import { create } from "lodash";
 
 const orgScope = SCOPES.ORG;
 const branchCollection = COLLECTIONS.BRANCH;
@@ -56,9 +57,10 @@ export const branchServiceFind = async (filter: BranchFilter, pagination: Pagina
 
   // 查询分页数据
   const sql = `
-    SELECT META().id, name, address, contactNumber, status, createdAt, updatedAt
+    SELECT META().id, name, address, openTime, closeTime, contactName, contactNumber, description, status, createdAt, updatedAt
     FROM ${branchCollectionFullName}
     ${whereClause}
+    ORDER BY createdAt DESC
     LIMIT $pageSize OFFSET $offset
   `;
 //   console.log("Executing branch query:", sql, "with params:", { ...params, pageSize, offset });
@@ -101,8 +103,8 @@ const virafyBranchName = async(name: string): Promise<string> => {
     console.log("=========virafyBranchName query result:", res);
     // 如果查询结果有数据，说明同名分店已存在
     if (res.rows.length > 0) {
-        throw AppError.keyAlreadyExists('Branch name already exists');
-        // throw AppError.keyAlreadyExists('分店名称已存在');
+      throw AppError.keyAlreadyExists('Branch name already exists');
+      // throw AppError.keyAlreadyExists('分店名称已存在');
     }
     return name;
 }
@@ -169,11 +171,19 @@ export const updateBranch = async (id: string, branch: BranchUpdateInput, accoun
   let updatedBranch = {
     ...oldbranch,
     ...branch,
+    name: branch.name || oldbranch.name,
+    address: branch.address || oldbranch.address,
+    contactName: branch.contactName || oldbranch.contactName,
+    contactNumber: branch.contactNumber || oldbranch.contactNumber,
+    status: branch.status || oldbranch.status,
+    openTime: branch.openTime || oldbranch.openTime,
+    closeTime: branch.closeTime || oldbranch.closeTime,
+    createdAt: oldbranch.createdAt,
     updatedAt: Date.now(),
     maintenanceLogs,
     type: branchCollection // 用于N1QL查询过滤
   };
-
+  console.log('=====updateBranch===>>>', updateBranch)
    const res =await CouchbaseDB.upsert(
     orgScope,
     branchCollection,

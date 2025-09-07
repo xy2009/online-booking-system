@@ -59,6 +59,7 @@ export interface TableUpdateInput {
 }
 
 export interface TableFilter {
+    branchId?: string, // 所属分店ID
     name?: string; // 支持模糊搜索
     location?: TableLocation;
     status?: TableStatus;

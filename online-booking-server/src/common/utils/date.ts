@@ -21,6 +21,6 @@ export const getNow = () => {
     return day().format(DateFormatKeys.formatNowStr);
 };
 
-export const formatDate = (date: string | number) => {
-    return day(date).format(DateFormatKeys.formatNowStr);
+export const formatDate = (date: string | number | undefined, formatDateStr = DateFormatKeys.formatNowStr) => {
+    return day(date).format(formatDateStr);
 };

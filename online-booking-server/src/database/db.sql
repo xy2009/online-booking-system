@@ -76,6 +76,7 @@ CREATE PRIMARY INDEX ON `online-booking`.`system`.`config`;
 -- DELETE FROM `online-booking`.`user`.`profile` WHERE TRUE;
 -- DELETE FROM `online-booking`.`user`.`refresh_token` WHERE TRUE;
 -- DELETE FROM `online-booking`.`business`.`table` WHERE TRUE;
+-- DELETE FROM `online-booking`.`org`.`branch` WHERE TRUE;
 
 
 -- 创建二级索引

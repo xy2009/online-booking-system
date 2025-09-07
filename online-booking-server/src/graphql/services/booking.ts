@@ -1,8 +1,10 @@
 import { omit } from 'lodash';
+import dayjs from 'dayjs';
+import { nanoid } from 'nanoid';
 
 import { Booking, BookingInput, BookingUpdateInput, BookingFilter, BookingListResult, BookingMaintenance, BookingStatus, BookingAction } from '../types/booking';
 import { CouchbaseDB } from '../../database/couchbaseUtils';
-import { COLLECTIONS, SCOPES, WORK_TIMES } from '../../common/constants/consts';
+import { COLLECTIONS, DateFormatKeys, SCOPES, WORK_TIMES } from '../../common/constants/consts';
 import AppError from '../../common/errors';
 import { generateUUID } from '../../common/utils/util';
 import { logger } from '../../common/utils/logger';
@@ -10,6 +12,7 @@ import { getTableById, isAvailableTable } from './table';
 import { IAccountResponse } from '../../entities/accountEntity';
 import { isSystemStaff } from '../middleware/permissionMiddleware';
 import { TableStatus } from '../types/table';
+import { formatDate } from '../../common/utils/date';
 
 
 const busniessScope = SCOPES.BUSINESS;
@@ -48,6 +51,20 @@ const bookStatusToTableStatusMap: Record<BookingStatus, TableStatus> = {
   cancelled: 'free',
   no_show: 'free'
 };
+
+const BOOKING_ID_PREFIX = 'BK';
+
+const generateBookingId = () => {
+  return generateNo(BOOKING_ID_PREFIX, 6);
+  // return `${BOOKING_ID_PREFIX}${Date.now().toString(36)}${nanoid(6)}`;
+}
+
+const generateNo = (prefix: string, randLent = 4) =>{
+  const date = new Date().toISOString().slice(0,10).replace(/-/g, '');
+  const rand = Math.floor(Math.random() * 10000).toString().padStart(randLent, '0');
+  return `${prefix}-${date}-${rand}`;
+}
+
 
 
 const isValidBookingTime = (bookingTime: number, turntableCycle: number): boolean => {
@@ -164,7 +181,7 @@ export const createBooking = async(input: BookingInput, userId: string): Promise
     
 
     const now = Date.now();
-    const id = generateUUID();
+    const id = generateBookingId();
     const key = `${bookingCollection}::${id}`;
     const _status = status || 'pending';
     
@@ -174,6 +191,9 @@ export const createBooking = async(input: BookingInput, userId: string): Promise
       bookingTime,
       numberOfPeople,
       status: _status,
+      branchId: input.branchId,
+      connectName: input.connectName,
+      connectPhone: input.connectPhone,
       specialRequests: input.specialRequests,
       createdAt: now,
       updatedAt: now,
@@ -231,7 +251,7 @@ export const updateBooking = async(id: string, update: BookingUpdateInput, accou
     const { userId } = account;
     const doc = res?.content;
     const now = Date.now();
-    const { status, numberOfPeople } = update;
+    const { status, numberOfPeople, connectPhone, connectName, specialRequests } = update;
     // status 校验, 只能是 'pending', 'confirmed', 'completed', 'cancelled', 'no_show'
     if (status && !['pending', 'confirmed', 'completed', 'cancelled', 'no_show'].includes(status)) {
       throw AppError.paramsError('Invalid booking status');
@@ -239,14 +259,22 @@ export const updateBooking = async(id: string, update: BookingUpdateInput, accou
 
     const isSystem = isSystemStaff(account.role);
     const { bookingTime } = update;
-    const { tableId: oldTableId, numberOfPeople: oldNumberOfPeople, status: oldStatus} = doc;
+    const { tableId: oldTableId, numberOfPeople: oldNumberOfPeople, status: oldStatus, connectName: oldConnectName, connectPhone: oldConnectPhone } = doc;
     console.log('Old booking:', doc);
     // 如果是以下状态，除了 isDeleted，不能修改任何字段
     if (['completed', 'cancelled', 'no_show'].includes(oldStatus)) {
       console.log('Update booking in completed, cancelled, no_show status:', Object.keys(omit(update, ['isDeleted'])));
-      // 只能修改 isDeleted 字段
-      if (Object.keys(omit(update, ['isDeleted'])).length > 0) {
-        throw AppError.forbidden('Cannot modify a booking that is already finalized');
+      
+      if (update.isDeleted) {
+        const td = omit(update, ['isDeleted']);
+        console.log('Omit isDeleted:', td);
+        if (Object.keys(td).length > 0) {
+          // 只能修改 isDeleted 字段
+          if(Object.values(td).some(v => (v !== undefined && v !== null))) {
+            console.log('Cannot modify booking in completed, cancelled, no_show status', id, td);
+             throw AppError.forbidden('Cannot modify a booking that is already finalized');
+          }
+        }
       }
     }
 
@@ -278,34 +306,41 @@ export const updateBooking = async(id: string, update: BookingUpdateInput, accou
       }
     }
 
-    // 检查状态变更是否合法
-    canChangeBookgingStatus(doc, status!, account);
-
-    const tableDoc = await getTableById(tableId);
-
-    // todo: 如果更新了桌子，需要检查新桌子是否可用，需要更多测试
-    // 如果更新了人数，需要检查桌子是否可用
-    if (numberOfPeople) {
-      if (!(numberOfPeople > 0)) {
-        throw AppError.paramsError('Invalid numberOfPeople');
+    console.log('Update booking by user:', userId, 'isSystem:', isSystem, 'with data:', update);
+    if (status) {
+      // 检查状态变更是否合法
+      canChangeBookgingStatus(doc, status!, account);
+    }
+    
+    let tableDoc;
+    if (tableId) {
+      tableDoc = await getTableById(tableId);
+      // todo: 如果更新了桌子，需要检查新桌子是否可用，需要更多测试
+      // 如果更新了人数，需要检查桌子是否可用
+      if (numberOfPeople) {
+        if (!(numberOfPeople > 0)) {
+          throw AppError.paramsError('Invalid numberOfPeople');
+        }
+        // 检查桌子容量是否足够
+        if (numberOfPeople !== oldNumberOfPeople && (tableDoc?.size < numberOfPeople
+          || (tableDoc?.maxSize && tableDoc?.maxSize < numberOfPeople)
+        )) {
+          throw AppError.paramsError('Table size is not enough for the number of people');
+        }
       }
-      // 检查桌子容量是否足够
-      if (numberOfPeople !== oldNumberOfPeople && (tableDoc?.size < numberOfPeople
-        || (tableDoc?.maxSize && tableDoc?.maxSize < numberOfPeople)
-      )) {
-        throw AppError.paramsError('Table size is not enough for the number of people');
+
+      // 如果更新了时间，需要检查时间和桌子是否可用
+      if (bookingTime && bookingTime !== doc.bookingTime) {
+        if (!tableDoc) throw AppError.tableNotAvailable('the table is not vailable');
+        const bookingByTableAndTimeIsVailable = await canBookingByTableAndTime(tableId, bookingTime, tableDoc.turntableCycle, id);
+        
+        if (!bookingByTableAndTimeIsVailable) {
+          throw AppError.timeNotAvailable('Table is not available to update the booking to the selected time'); 
+        }
       }
     }
 
-    // 如果更新了时间，需要检查时间和桌子是否可用
-    if (bookingTime && bookingTime !== doc.bookingTime) {
-      if (!tableDoc) throw AppError.tableNotAvailable('the table is not vailable');
-      const bookingByTableAndTimeIsVailable = await canBookingByTableAndTime(tableId, bookingTime, tableDoc.turntableCycle, id);
-      
-      if (!bookingByTableAndTimeIsVailable) {
-        throw AppError.timeNotAvailable('Table is not available to update the booking to the selected time'); 
-      }
-    }
+
     // 如果isDeleted 没有传，且原来不是已删除状态，默认设置为 false, 避免 null 导致查询异常
     if (!doc.isDeleted && update.isDeleted === undefined) {
       update.isDeleted = false;
@@ -314,20 +349,35 @@ export const updateBooking = async(id: string, update: BookingUpdateInput, accou
     const updateData: Booking = {
       ...doc,
       ...update,
+      status: _status,
+      bookingTime: bookingTime || doc.bookingTime,
+      tableId,
+      numberOfPeople: numberOfPeople || doc.numberOfPeople,
+      connectName: connectName || doc.connectName,
+      connectPhone: connectPhone || doc.connectPhone,
+      specialRequests: specialRequests || doc.specialRequests,
+      createdAt: doc.createdAt,
       updatedAt: now,
+      type: bookingCollection,
       maintenanceLogs: [
         {
           id: generateUUID(),
           action: status ? statusToActionMap[status] || 'update' : 'update',
           performedBy: userId,
           performedAt: now,
-          notes: `Booking was updated to status: [${status}], deleted: [${update.isDeleted}]`
+          notes: `Booking was updated to status: [${status}], deleted: [${update.isDeleted}], 
+            ${numberOfPeople && numberOfPeople !== oldNumberOfPeople ? `numberOfPeople is chage:${numberOfPeople},`  : ''}
+            ${bookingTime && bookingTime !== doc.bookingTime ? '' : `bookingTime is change: [${formatDate(bookingTime, DateFormatKeys.formatTimeStr2)}],`}
+            ${tableId && tableId !== oldTableId ? '' : `tableId is change: [${tableId}],`}
+            ${specialRequests && specialRequests !== doc.specialRequests ? '' : `specialRequests is change: [${specialRequests}],`}
+            ${connectName && connectName !== oldConnectName ? `connectName is chage: [${connectName}],` : ''}
+            ${connectPhone && connectPhone !== oldConnectPhone ? `connectPhone is change: [${connectPhone}],` : ''}`
         },
         ...(doc?.maintenanceLogs || []),
       ]
     };
     // 只在当前预订 status变更时，才会影响table 状态，更新 table 状态
-    if (status && status !== oldStatus && (bookingTime && (bookingTime <= now + tableDoc.turntableCycle * 60 * 1000))) {
+    if (tableDoc && status && status !== oldStatus && (bookingTime && (bookingTime <= now + tableDoc.turntableCycle * 60 * 1000))) {
       const tableKey = `${COLLECTIONS.TABLE}::${tableId}`;
       tableDoc.status = bookStatusToTableStatusMap[_status as BookingStatus];
       await CouchbaseDB.upsert(busniessScope, COLLECTIONS.TABLE, tableKey, tableDoc);
@@ -377,7 +427,7 @@ export const updateBooking = async(id: string, update: BookingUpdateInput, accou
       params.bookingTimeTo = filter.bookingTimeTo;
     }
 
-    console.log('Booking list query params:', params);
+    
 
     // 软删除过滤
     if (filter?.isDeleted !== undefined) {
@@ -391,6 +441,9 @@ export const updateBooking = async(id: string, update: BookingUpdateInput, accou
     const whereClause = where.length ? `WHERE ${where.join(' AND ')}` : '';
     const offset = (page - 1) * pageSize;
 
+    // console.log('Booking list whereClause:', whereClause);
+    // console.log('Booking list offset:', offset);
+
     const countSql = `SELECT COUNT(*) AS total FROM ${bookingCollectionFullName} ${whereClause}`;
     const countResult = await CouchbaseDB.query(countSql, { parameters: params });
 
@@ -400,6 +453,7 @@ export const updateBooking = async(id: string, update: BookingUpdateInput, accou
       SELECT META().id, *
       FROM ${bookingCollectionFullName}
       ${whereClause}
+      ORDER BY createdAt DESC
       LIMIT $pageSize OFFSET $offset
     `;
     const result = await CouchbaseDB.query(sql, {

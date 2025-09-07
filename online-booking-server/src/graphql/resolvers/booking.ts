@@ -62,11 +62,13 @@ export const bookingResolves: Resolvers = {
                 status: input.status === null ? undefined : input.status,
                 specialRequests: input.specialRequests === null ? undefined : input.specialRequests,
                 tableId: input.tableId === null ? undefined : input.tableId,
+                connectName: input.connectName === null ? undefined : input.connectName,
+                connectPhone: input.connectPhone === null ? undefined : input.connectPhone,
+                branchId: typeof input.branchId === "string" ? input.branchId : "", // Ensure branchId is always a string
+                bookingType: input.bookingType === null ? undefined : input.bookingType, // Ensure bookingType is never null
             };
             const newBooking = await createBooking(safeInput, user.userId);
-            const nb = newBooking as Booking;
-            console.log("New booking created====================:", nb);
-            return nb;
+            return newBooking as Booking;
             
         },
         updateBooking: async (_, { id, input }, { user }) => {
@@ -82,6 +84,8 @@ export const bookingResolves: Resolvers = {
                 specialRequests: input.specialRequests === null ? undefined : input.specialRequests,
                 tableId: input.tableId === null ? undefined : input.tableId,
                 isDeleted: input.isDeleted === null ? undefined : input.isDeleted,
+                connectName: input.connectName === null ? undefined : input.connectName,
+                connectPhone: input.connectPhone === null ? undefined : input.connectPhone,
             };
             const updatedBooking = await updateBooking(id, safeInput, user);
             if (!updatedBooking) {

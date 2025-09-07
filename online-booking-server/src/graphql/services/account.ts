@@ -3,7 +3,7 @@ import { omit } from 'lodash';
 
 import { Account, AccountInput, AccountUpdateInput, AccountFilter, AccountListResult } from '../types/account';
 import { CouchbaseDB } from '../../database/couchbaseUtils';
-import { COLLECTIONS, SCOPES, EnvKeys } from '../../common/constants/consts';
+import { COLLECTIONS, SCOPES, EnvKeys, ROLES } from '../../common/constants/consts';
 import AppError from '../../common/errors';
 import { generateUUID } from '../../common/utils/util';
 import { logger } from '../../common/utils/logger';
@@ -115,6 +115,12 @@ export const updateAccount = async (
   const updatedAccount: Account = {
     ...account,
     ...updateData,
+    password: update.password || account.password,
+    status: update.status || account.status,
+    username: update.username || account.username,
+    createdAt: account.createdAt,
+    updatedAt: now,
+    type: accountCollection,
   };
 
   await CouchbaseDB.upsert(userScope, accountCollection, key, updatedAccount);
@@ -165,6 +171,13 @@ export const getAccountByMobile = async (mobile: string): Promise<Account | null
   }
 };
 
+const userRoleCondition = (role?: string) => {
+  if (role) {
+    return role === 'admin' ? `(role in [${Object.values(ROLES).join(',')}])` : '(role != "admin")';
+  }
+  return '1=1'; // No role filter
+}
+
 /**
  * 获取账户列表
  */
@@ -183,6 +196,12 @@ export const listAccounts = async (
     where.push('mobile LIKE $mobile');
     params.mobile = `%${filter.mobile}%`;
   }
+
+  // 根据角色过滤
+  // const roleCondition = userRoleCondition(filter.role);
+  // if (roleCondition) {
+  //   where.push(roleCondition);
+  // }
   // 只有系统管理员可以查看所有账户
   if (isAdmin(account.role) && filter.role) {
     where.push('role = $role');

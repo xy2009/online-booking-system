@@ -3,6 +3,7 @@ import { CreateTableInput, PaginationInput, Resolvers, Table, TableBookingFilter
 import { createTable, deleteTable, findTables, getTableById, updateTable } from "../services/table";
 import AppError from "../../common/errors";
 import { TableInput } from "../types/table";
+import { isSystemStaff } from "../middleware/permissionMiddleware";
 
 
 export const tableResolves: Resolvers = {
@@ -24,12 +25,13 @@ export const tableResolves: Resolvers = {
                 status: filter?.status === null ? undefined : filter?.status,
                 sizeMin: filter?.sizeMin === null ? undefined : filter?.sizeMin,
                 sizeMax: filter?.sizeMax === null ? undefined : filter?.sizeMax,
+                branchId: branchId === null ? undefined : branchId
             };
             console.log("Safe filter after processing:", safeFilter);
-            if (!branchId) {
+            if (!isSystemStaff(context?.user?.role) && !branchId) {
                 throw new Error("branchId is required");
             }
-            const result = await findTables(branchId, safeFilter, safePagination.page, safePagination.pageSize);
+            const result = await findTables(safeFilter, safePagination.page, safePagination.pageSize);
 
             // Map items to match generated GraphQL Table type
             const mappedItems = result.items.map((table: any) => ({
@@ -79,22 +81,24 @@ export const tableResolves: Resolvers = {
                 location: filter?.location === null ? undefined : filter?.location,
                 size: size || 1,
                 sizeMin: size,
+                branchId, 
             };
             logger.info(`Finding available tables for branchId: ${branchId}, filter: ${JSON.stringify(saveFilter)}, pagination: ${page}/${pageSize}, user: ${context?.user?.id}`);
             // Call the service to find available tables
-            const tables = await findTables(branchId, saveFilter, page, pageSize);
+            const tables = await findTables(saveFilter, page, pageSize);
+            // console.log("Tables found:", tables);
             // For simplicity, assuming all 'free' tables are available
             const availableTables = tables.items;
             // Map fields to match generated GraphQL Table type, especially nullable enums
             const mappedTables = availableTables.filter((table: any) => {
                 if (!['maintenance', 'unavailable'].includes(table?.status)){
-                    return {...table, status: TableStatus.Unavailable};
+                    return {...table};
                 }
             });
             // Return as TablePage type
             return {
                 items: mappedTables as Table[],
-                total: tables.total,
+                total: mappedTables.length,
                 page,
                 pageSize,
             };

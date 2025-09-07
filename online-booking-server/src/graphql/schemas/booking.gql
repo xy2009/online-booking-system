@@ -33,10 +33,13 @@ type BookingMaintenance {
 type Booking {
   id: ID!
   userId: ID!
+  branchId: ID!
   tableId: ID
   bookingTime: Float!
   numberOfPeople: Int!
   status: BookingStatus!
+  connectName: String
+  connectPhone: String
   specialRequests: String
   createdAt: Float!
   updatedAt: Float!
@@ -49,10 +52,14 @@ type Booking {
 input BookingInput {
   userId: ID!
   bookingTime: Float!
+  branchId: ID!
   tableId: ID
   numberOfPeople: Int!
+  connectName: String
+  connectPhone: String
   status: BookingStatus
   specialRequests: String
+  bookingType: BookingType
 }
 
 input BookingUpdateInput {
@@ -60,6 +67,8 @@ input BookingUpdateInput {
   bookingTime: Float
   numberOfPeople: Int
   status: BookingStatus
+  connectName: String
+  connectPhone: String
   specialRequests: String
   isDeleted: Boolean
 }

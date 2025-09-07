@@ -12,6 +12,7 @@ export interface Branch {
   id: string;
   name: string;
   address: string;
+  contactName: string;
   contactNumber: string;
   status: BranchStatus;
   openTime: string
@@ -26,6 +27,7 @@ export interface Branch {
 export interface BranchInput {
     name: string;
     address: string;
+    contactName: string;
     contactNumber: string;
     status?: BranchStatus; // 可选，默认为 'active'
     openTime: string
@@ -35,6 +37,7 @@ export interface BranchInput {
 export interface BranchUpdateInput {
     name?: string;
     address?: string;
+    contactName?: string;
     contactNumber?: string;
     status?: BranchStatus;
     openTime?: string

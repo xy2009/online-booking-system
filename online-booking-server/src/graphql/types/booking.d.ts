@@ -23,11 +23,14 @@ export type BookingAction =
 export interface Booking {
   id: string;
   userId: string;
+  branchId: string;// 所属分店ID,用于人工或系统分配桌位
   tableId?: string;
   bookingTime: number; // 预订时间
   numberOfPeople: number; // 用餐人数
   status: BookingStatus;
   specialRequests?: string; // 特殊要求
+  connectName?: string; // 可选，联系人姓名
+  connectPhone?: string; // 可选，联系手机号
   createdAt: number;
   updatedAt: number;
   type: string; // 集合类型
@@ -38,11 +41,14 @@ export interface Booking {
 
 export interface BookingInput {
   userId: string;
+  branchId: string; 
   tableId?: string;// 可选，若不指定则由系统分配，前期人工，后期自动；客户指定则优先分配
   bookingTime: number; // 预订时间
   numberOfPeople: number; // 用餐人数
   status?: BookingStatus; // 可选，默认为 'pending'
   specialRequests?: string; // 可选，特殊要求
+  connectName?: string; // 可选，联系人姓名
+  connectPhone?: string; // 可选，联系手机号
   bookingType?: BookingType; // 可选，默认为 'online'
 }
 
@@ -52,6 +58,8 @@ export interface BookingUpdateInput {
   numberOfPeople?: number; // 可选，用餐人数
   status?: BookingStatus; // 可选，预订状态
   specialRequests?: string; // 可选，特殊要求
+  connectName?: string; // 可选，联系人姓名
+  connectPhone?: string; // 可选，联系手机号
   isDeleted?: boolean; // 可选，软删除标志
 }
 

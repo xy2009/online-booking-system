@@ -55,16 +55,17 @@ export const branchResolves: Resolvers = {
     },
     Mutation: {
         createBranch: async (_: any, { input }: { input: CreateBranchInput }, context: any) => {
-            const { name, address, contactNumber, status } = input;
+            const { name, address, contactName, contactNumber, status } = input;
             // 创建新分店
             const result = await createBranch(
                 { 
                     name, 
                     address, 
+                    contactName,
                     contactNumber, 
                     status: status ?? 'active',
                     openTime: input.openTime,
-                    closeTime: input.closeTime
+                    closeTime: input.closeTime,
                 },
                 context?.user?.id
             );
@@ -84,11 +85,12 @@ export const branchResolves: Resolvers = {
         },
         updateBranch: async (_: any, { id, input }: { id: string; input: UpdateBranchInput }, context: any) => {
             console.log("Updating branch with input:", input, id);
-            const { name, address, contactNumber, status } = input;
+            const { name, address, contactName, contactNumber, status } = input;
             // 更新分店信息
             const safeInput = {
                 name: name === null ? undefined : name,
                 address: address === null ? undefined : address,
+                contactName: contactName === null ? undefined : contactName,
                 contactNumber: contactNumber === null ? undefined : contactNumber,
                 status: status === null ? undefined : status
             };

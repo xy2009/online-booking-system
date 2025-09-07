@@ -31,10 +31,11 @@ app.use(express.json());
 // To handle URL-encoded data
 app.use(express.urlencoded({ extended: true }));
 
-app.use((req, res, next) => {
-  console.log("AFTER JSON:", req.path, req.body);
-  next();
-});
+// debug: log request body
+// app.use((req, res, next) => {
+//   console.log("AFTER JSON:", req.path, req.body);
+//   next();
+// });
 
 // 注册 GraphQL 中间件（同步注册，保证顺序）
 (async () => {

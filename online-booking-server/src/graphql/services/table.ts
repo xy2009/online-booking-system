@@ -58,7 +58,7 @@ export const isAvailableTable = async (id: string, branchId?: string): Promise<b
       throw AppError.paramsError("Table maxSize must be greater than size");
     }
     // 检查name是否重复
-    const existingTables = await findTables(branchId, { name: input.name }, 1, 1, true);
+    const existingTables = await findTables({ branchId, name: input.name }, 1, 1, true);
     if (existingTables.total > 0) {
       throw AppError.keyAlreadyExists("Table name already exists in this branch");
     }
@@ -184,15 +184,20 @@ export const isAvailableTable = async (id: string, branchId?: string): Promise<b
   };
 
   export const findTables = async(
-    branchId: string,
     filter: TableFilter = {},
     page = 1,
     pageSize = 20,
     closeLike = false
   ): Promise<TableListResult> => {
-    const where: string[] = [`branchId = $branchId`];
-    const params: Record<string, any> = { branchId };
+    console.log('=======findTables called with filter:', filter, 'page:', page, 'pageSize:', pageSize, 'closeLike:', closeLike);
+    const where: string[] = [];
+    const { branchId } = filter;
+    const params: Record<string, any> = {};
 
+    if (branchId) {
+      where.push("branchId = $branchId");
+      params.branchId = branchId;
+    }
     if (filter.name) {
       if (closeLike) {
         where.push("name = $name");
@@ -222,6 +227,7 @@ export const isAvailableTable = async (id: string, branchId?: string): Promise<b
     const whereClause = where.length ? `WHERE ${where.join(" AND ")}` : "";
     const offset = (page - 1) * pageSize;
 
+    console.log('Final whereClause:', whereClause, 'with params:', params);
     // 查询总数
     const countSql = `SELECT COUNT(*) AS total FROM ${tableCollectionFullName} ${whereClause}`;
     const countResult = await CouchbaseDB.query(countSql, { parameters: params });
@@ -232,6 +238,7 @@ export const isAvailableTable = async (id: string, branchId?: string): Promise<b
       SELECT META().id, *
       FROM ${tableCollectionFullName}
       ${whereClause}
+      ORDER BY createdAt DESC
       LIMIT $pageSize OFFSET $offset
     `;
     const result = await CouchbaseDB.query(sql, {
@@ -314,11 +321,11 @@ export const availableTables = async (
   console.log('tableWhereClause:', tableWhereClause);
   console.log('tableSql:', tableSql);
   const tableResult = await CouchbaseDB.query(tableSql, { parameters: tableParams });
-  console.log('Table SQL Params:', tableParams);
+  console.log("Table SQL Params=========>>>>>:", tableParams);
 
   // 过滤掉 maintenance/unavailable 状态的桌子
   const allTables: Table[] = tableResult.rows.map((row: any) => {
-    if (!unavailableStatuses.includes(row?.status)){
+    if (!unavailableStatuses.includes(row.status)){
       return {...row};
     }
   });
@@ -328,7 +335,7 @@ export const availableTables = async (
   }
 
   // 3. 查询该时间段内有 confirmed booking 的桌子
-  // 计算每个桌子的可用时间段
+  // 记录每个桌子的翻桌周期
   const tableIdToCycle: Record<string, number> = {};
   allTables.forEach(t => {
     tableIdToCycle[t.id] = t.turntableCycle || defaultTurntableCycle;
@@ -378,6 +385,12 @@ export const availableTables = async (
 
   // 4. 过滤掉已被占用的桌子
   let availableTables = allTables.filter(t => !bookedTableIds.has(t.id));
+  // 过滤掉 maintenance/unavailable 状态的桌子
+  availableTables = availableTables.filter((it) => {
+    if (!['maintenance', 'unavailable'].includes(it.status)){
+      return it;
+    }
+  });
 
   // 5. 按 size 与 filter.size 的差值升序排序（更接近需求的排前面）
   if (filter.size !== undefined) {

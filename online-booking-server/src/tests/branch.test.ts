@@ -71,6 +71,7 @@ describe(`${moduleName}:`, () => {
               id
               name
               address
+              contactName
               contactNumber
               status
               createdAt
@@ -81,6 +82,7 @@ describe(`${moduleName}:`, () => {
           "input": {
             "name": branchName,
             "address": "上海市某路88号",
+            "contactName": "张三",
             "contactNumber": "13800000000",
             "status": "active",
             "openTime": "9",
@@ -115,6 +117,7 @@ describe(`${moduleName}:`, () => {
               id
               name
               address
+              contactName
               contactNumber
               status
               createdAt
@@ -125,6 +128,7 @@ describe(`${moduleName}:`, () => {
           "input": {
             "name": branchName,
             "address": "上海市某路88号",
+            "contactName": "张san",
             "contactNumber": "13800000000",
             "status": "active",
             "openTime": "9",
@@ -147,6 +151,7 @@ describe(`${moduleName}:`, () => {
                 id
                 name
                 address
+                contactName
                 contactNumber
                 status
                 createdAt
@@ -200,6 +205,7 @@ describe(`${moduleName}:`, () => {
               id
               name
               address
+              contactName
               contactNumber
               status
               createdAt
