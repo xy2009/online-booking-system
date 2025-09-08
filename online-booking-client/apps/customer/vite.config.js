@@ -8,8 +8,8 @@ export default defineConfig({
     host: '0.0.0.0',
     port: 3000,
     proxy: {
-      '/api': 'http://192.168.31.85:3030',
-      '/graphql': 'http://192.168.31.85:3030'
+      '/api': 'http://localhost:3030',
+      '/graphql': 'http://localhost:3030'
     },
     // configureServer(server) {
     //   server.httpServer?.on('listening', () => {

@@ -41,4 +41,4 @@
 - **包管理**: pnpm + workspaces
 - **容器化**: Docker + Docker Compose
 
-#### 注：详情请进入子项目进行查看
+#### 注：启动参数配置等 详情请进入子项目进行查看READMEN.md
