@@ -7,14 +7,15 @@ import { ADMIN_CONSTANTS } from '../constants';
 import styles from './Dashboard.module.css';
 
 export default function Dashboard() {
-  const navigate = useNavigate();
-  const [stats, setStats] = createSignal({
+  const statsInitData = {
     totalBookings: 0,
     pendingBookings: 0,
     totalTables: 0,
     availableTables: 0,
     totalBranches: 0
-  });
+  };
+  const navigate = useNavigate();
+  const [stats, setStats] = createSignal(statsInitData);
 
   onMount(() => {
     // Check authentication
@@ -24,13 +25,9 @@ export default function Dashboard() {
     }
 
     // Load dashboard statistics (mock data for now)
-    setStats({
-      totalBookings: 156,
-      pendingBookings: 12,
-      totalTables: 48,
-      availableTables: 32,
-      totalBranches: 3
-    });
+    // In a real application, fetch this data from the server
+    // just using static data for demonstration
+    setStats(statsInitData);
 
     toast.dismiss();
   });

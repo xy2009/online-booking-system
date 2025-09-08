@@ -2,7 +2,8 @@ import { createSignal } from 'solid-js';
 import { 
   API_ENDPOINTS, 
   STORAGE_KEYS, 
-  ERROR_MESSAGES 
+  ERROR_MESSAGES,
+  APP_CONFIG
 } from '../constants';
 import { publicFetchWrapper, fetchWrapper } from '../utils/requesWrapper';
 

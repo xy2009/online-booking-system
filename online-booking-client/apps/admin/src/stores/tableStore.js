@@ -3,6 +3,7 @@ import { createSignal } from 'solid-js';
 import { findTables, getTableById, createTable, updateTable, disableTable } from '../services/tableService';
 
 const [tables, setTables] = createSignal([]);
+const [tablesMap, setTablesMap] = createSignal({});
 const [selectedTable, setSelectedTable] = createSignal(null);
 const [loading, setLoading] = createSignal(false);
 const [error, setError] = createSignal(null);
@@ -21,8 +22,14 @@ const fetchTables = async (params = {}) => {
       ...params
     }
     const data = await findTables(input);
-    console.log('Fetched tables:', data);
+    // console.log('Fetched tables:', data);
     setTables(data?.tables?.items || []);
+    // 构建 tablesMap 以便快速查找
+    const map = {};
+    (data?.tables?.items || []).forEach(table => {
+      map[table.id] = table;
+    });
+    setTablesMap(map);
   } catch (e) {
     setError(e.message || '查询餐桌失败');
   } finally {
@@ -102,6 +109,7 @@ const disableTableInStore = async (tableId) => {
 
 export const tableStore = {
   tables,
+  tablesMap,
   selectedTable,
   loading,
   error,

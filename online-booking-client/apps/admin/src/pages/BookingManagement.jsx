@@ -4,6 +4,8 @@ import { Toaster, toast } from 'solid-toast';
 import { useNavigate } from '@solidjs/router';
 import { formatDate, formatTime } from '@booking/shared-utils';
 import { authStore } from '../stores/authStore';
+import { branchStore } from '../stores/branchStore';
+import { tableStore } from '../stores/tableStore';
 import { ADMIN_CONSTANTS, BOOKING_STATUS_TO_ACTIONS,  } from '../constants';
 import styles from './BookingManagement.module.css';
 
@@ -22,6 +24,11 @@ export default function BookingManagement() {
     }
     toast.dismiss();
 
+    // to get branch data,for format branch name
+    await branchStore.fetchBranches();
+    // to get table data,for format table name
+    await tableStore.fetchTables();
+    // fetch bookings
     await bookingsStore.fetchBookings();
   
 
@@ -155,11 +162,11 @@ export default function BookingManagement() {
                     <div class={styles.bookingDetails}>
                       <div class={styles.detailItem}>
                         <span class={styles.label}>分店:</span>
-                        <span>{booking.branchId}</span>
+                        <span>{branchStore.branchesMap()?.[booking.branchId]?.name || '未知门店'}</span>
                       </div>
                       <div class={styles.detailItem}>
                         <span class={styles.label}>桌号:</span>
-                        <span>{booking.tableId}</span>
+                        <span>{tableStore.tablesMap()?.[booking.tableId]?.name || '--'}</span>
                       </div>
                       <div class={styles.detailItem}>
                         <span class={styles.label}>日期:</span>

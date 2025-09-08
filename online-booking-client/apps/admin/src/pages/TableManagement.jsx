@@ -1,6 +1,6 @@
 import { createSignal, onMount, For } from 'solid-js';
 import { tableStore } from '../stores/tableStore';
-import { A, useNavigate } from '@solidjs/router';
+import { useNavigate } from '@solidjs/router';
 import { authStore } from '../stores/authStore';
 import { branchStore } from '../stores/branchStore';
 import { ADMIN_CONSTANTS } from '../constants';
@@ -42,7 +42,7 @@ export default function TableManagement() {
   });
 
   const branches = () => {
-    console.log('branchStore.branches():', branchStore.branches());
+    // console.log('branchStore.branches():', branchStore.branches());
 // table.branchName
     const branchSet = new Set((branchStore.branches() || []).map(branch => branch.name));
     return Array.from(branchSet);
