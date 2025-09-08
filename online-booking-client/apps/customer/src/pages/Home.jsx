@@ -34,6 +34,7 @@ function Home() {
   };
 
   const handleLogout = async () => {
+    console.log('Logging out...');
     if (confirm('确定要退出登录吗？')) {
       await authStore.logout();
       // 延迟刷新页面，确保登出请求完成
@@ -157,15 +158,16 @@ function Home() {
                       </div>
                       
                       <div class={styles.storeActions}>
+                        <a href={`tel:${store.contactNumber}`} class={styles.phoneButton}>
+                          📞 {store.contactNumber}
+                        </a>
                         <Button 
                           onClick={() => handleStoreSelect(store)}
                           class={styles.bookButton}
                         >
                           立即预订
                         </Button>
-                        <a href={`tel:${store.contactNumber}`} class={styles.phoneButton}>
-                          📞 {store.contactNumber}
-                        </a>
+                        
                       </div>
                     </div>
                   </div>

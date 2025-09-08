@@ -30,6 +30,14 @@
   color: #4a5568;
 }
 
+.userInfo span {
+  max-width: 140px; /* 原来是80px，可适当增大 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
+}
+
 .authButtons {
   display: flex;
   gap: 8px;
@@ -193,9 +201,6 @@
   align-items: center;
 }
 
-.bookButton {
-  flex: 1;
-}
 
 .phoneButton {
   color: #667eea;
@@ -205,10 +210,23 @@
   padding: 8px 12px;
   border-radius: 6px;
   transition: background-color 0.2s ease;
+  background-color: #f3f3f7;
+  cursor: pointer; 
+  flex: 2 1 0%;
+  min-width: 0;
+  text-align: center;
 }
 
+
+
 .phoneButton:hover {
-  background-color: #f7fafc;
+  /* background-color: #f7fafc; */
+  background-color: #5a67d8;
+}
+
+.bookButton {
+  flex: 1 1 0%;
+  min-width: 0;
 }
 
 .empty {
@@ -230,7 +248,7 @@
   /* 优化移动端欢迎语显示，仅隐藏昵称前缀 */
   .userInfo span {
     /* display: none; */
-    max-width: 80px;
+    max-width: 120px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -303,6 +321,11 @@
     font-size: 20px;
     margin-bottom: 16px;
   }
+
+  .storeActions {
+    flex-direction: row;
+    gap: 8px;
+  }
 }
 
 .ellipsis {
@@ -311,4 +334,26 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   display: block;
+}
+
+@media (max-width: 600px) {
+  .storeActions {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .phoneButton, .bookButton {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (min-width: 600px) and (max-width: 760px) {
+  .storeActions {
+    flex-direction: row;
+    gap: 12px;
+  }
+  .phoneButton, .bookButton {
+    width: auto;
+    text-align: center;
+  }
 }
