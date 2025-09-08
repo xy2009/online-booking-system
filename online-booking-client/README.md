@@ -26,12 +26,12 @@ cd packages/api-client && pnpm install
 # 根目录运行
 pnpm run dev
 
-# 启动客户端 (端口 3000)
+# 启动客户端 (默认端口 3000，根据端口占用情况，可能会变)
 cd apps/customer && pnpm run dev
 # 也可以在根目录运行以下命令启动客户端
 pnpm run dev:customer
 
-# 启动管理端 (端口 3003)
+# 启动管理端 (默认端口 3001，根据端口占用情况，可能会变)
 cd apps/admin && pnpm run dev
 # 也可以在根目录运行以下命令启动管理端
 pnpm run dev:admin
