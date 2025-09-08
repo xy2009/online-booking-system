@@ -203,6 +203,16 @@ function Booking() {
     return <div>加载中...</div>;
   }
 
+   const formatTime = (timeStr) => {
+    if (!timeStr) return '';
+    // 如果是 '09' 或 '9'，补全为 '09:00'
+    if (/^\d{1,2}$/.test(timeStr)) {
+      return timeStr.padStart(2, '0') + ':00';
+    }
+    // 如果是 '09:30' 这种，直接返回
+    return timeStr;
+  };
+
   return (
     <div class={styles.container}>
       <Toaster />
@@ -216,7 +226,7 @@ function Booking() {
       <div class={styles.storeInfo}>
         <h2>{store.name}</h2>
         <p>{store.address}</p>
-        <p>营业时间：{store.openTime} - {store.closeTime}</p>
+        <p>营业时间：{formatTime(store.openTime)} - {formatTime(store.closeTime)}</p>
       </div>
 
       <div class={styles.steps}>
