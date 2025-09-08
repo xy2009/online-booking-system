@@ -19,26 +19,26 @@ pnpm install
 # 注：请分别进入客户端子项目安装依赖，不然启动会报错
 cd apps/customer && pnpm install
 cd apps/admin && pnpm install
-# 此公用模块也有用刀，依赖也需要安装
+# 此公用模块也有用到，依赖也需要安装
 cd packages/api-client && pnpm install
 
 # 一键启动 两个端
 # 根目录运行
 pnpm run dev
 
-# 启动客户端 (端口 3000)
+# 启动客户端 (默认端口 3000，根据端口占用情况，可能会变)
 cd apps/customer && pnpm run dev
 # 也可以在根目录运行以下命令启动客户端
 pnpm run dev:customer
 
-# 启动管理端 (端口 3003)
+# 启动管理端 (默认端口 3001，根据端口占用情况，可能会变)
 cd apps/admin && pnpm run dev
 # 也可以在根目录运行以下命令启动管理端
 pnpm run dev:admin
 
 ```
 
-### Docker部署 -- 目前暂未调试通过 --
+### Docker部署 -- 目前暂未完成调试 --
 
 #### 1. 构建和启动所有服务
 
