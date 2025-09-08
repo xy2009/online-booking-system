@@ -50,7 +50,7 @@ function Booking() {
         connectPhone: user?.connectPhone || user.mobile || '',
         notes: ''
       }
-      console.log('customer:', customer);
+      // console.log('customer:', customer);
       // debugger;  
       setCustomerInfo(customer);
     }

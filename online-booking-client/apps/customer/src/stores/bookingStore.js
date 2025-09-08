@@ -71,7 +71,7 @@ const fetchAvailableSlots = async (storeId, date, size) => {
       }`,{
       
       filter:{
-        branchId: '0e862012-07fe-467b-950a-66908d80140a',//storeId,
+        branchId: storeId,
         startTime: new Date(date).getTime(),
         size
       },
