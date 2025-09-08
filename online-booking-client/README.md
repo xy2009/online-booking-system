@@ -16,6 +16,11 @@
 ```bash
 # 安装依赖
 pnpm install
+# 注：请分别进入客户端子项目安装依赖，不然启动会报错
+cd apps/customer && pnpm install
+cd apps/admin && pnpm install
+# 此公用模块也有用刀，依赖也需要安装
+cd packages/api-client && pnpm install
 
 # 一键启动 两个端
 # 根目录运行
