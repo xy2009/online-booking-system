@@ -7,7 +7,8 @@
     "test_show": "jest --verbose",
     "test_coverage": "jest --coverage",
     "codegen": "graphql-codegen --config dist/codegen.js",
-    "compile": "tsc && cp -r src/graphql/schemas dist/graphql/schemas",
+    "compile": "tsc && shx cp -r src/graphql/schemas dist/graphql/schemas",
+    "build": "shx rm -rf dist && npm run compile && npm run codegen",
     "dev": "NODE_ENV=development nodemon --watch 'src/**/*.ts' --exec tsx src/index.ts",
     "prestart": "npm run compile",
     "start": "node dist/index.js"
