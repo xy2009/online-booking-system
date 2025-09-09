@@ -25,7 +25,7 @@ const __candidates = new Set<string>([
 
 // 标准化路径，去除扩展名差异, 避免编译后无法匹配
 const normalizePath = (path: string) =>
-  path.replace(/\.ts$/, '.js').replace(/\.js$/, '.js');
+  path.replace(/\.ts$/, '.js').replace(/\.js$/, '.ts');
 
 
 export const _getConfigByKey_ = (key: string, pathIndex: number = 1) => {
