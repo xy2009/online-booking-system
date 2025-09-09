@@ -23,13 +23,18 @@ const __candidates = new Set<string>([
   'common/utils/auth.ts'
 ]);
 
+// 标准化路径，去除扩展名差异, 避免编译后无法匹配
+const normalizePath = (path: string) =>
+  path.replace(/\.ts$/, '.js').replace(/\.js$/, '.js');
+
+
 export const _getConfigByKey_ = (key: string, pathIndex: number = 1) => {
     // 获取调用方文件路径
     const callerFile = getCallerFile();
     const filePathParts = callerFile ? callerFile.split('/') : [];
     const relevantPathParts = filePathParts.slice(-pathIndex).join('/');
     logger.info(`Config requested by: ${callerFile}`);
-    if (!__candidates.has(relevantPathParts)) {
+    if (!__candidates.has(normalizePath(relevantPathParts))) {
         throw AppError.internal(`Access to config key "${key}" is not allowed.`);
     }
     return process.env[key];
