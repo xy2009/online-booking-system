@@ -54,3 +54,7 @@ coverage/
 # 临时文件
 tmp/
 temp/
+
+# Couchbase 数据目录，避免将数据库文件提交到版本控制系统
+
+data/

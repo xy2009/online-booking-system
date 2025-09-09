@@ -20,16 +20,18 @@ export class CouchbaseDB {
 
   public async connect() {
     if (!this.cluster) {
-      const DB_URL = process.env.DB_URL || "couchbase://localhost";
+      const DB_URL  =  `${process.env.DB_TYPE || 'couchbase'}://${process.env.DB_HOST || 'localhost'}`;
       const DB_USER = process.env.DB_USER || "Administrator";
       const DB_PASSWORD = process.env.DB_PASSWORD || "password";
       const DB_BUCKET = process.env.DB_BUCKET || "my_bucket";
+      
+      logger.info(`[Couchbase] Connecting to ${DB_URL}, bucket: ${DB_BUCKET}...`);
+
       this.cluster = await connect(DB_URL, {
         username: DB_USER,
         password: DB_PASSWORD,
       });
       this.bucket = this.cluster.bucket(DB_BUCKET);
-      // this.collection = this.bucket.defaultCollection();
       logger.info("[Couchbase] Connected!");
     }
   }

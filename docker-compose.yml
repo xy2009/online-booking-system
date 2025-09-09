@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+
+  couchbase:
+    extends:
+      file: ./online-booking-infra/couchbase-docker/docker-compose.yml
+      service: couchbase
+
+  server:
+    build:
+      context: ./online-booking-server
+      dockerfile: Dockerfile
+    ports:
+      - "3030:3030"
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
+      - DB_HOST=${DB_HOST:-couchbase}
+      - DB_PORT=${DB_PORT:-11210}
+      - DB_USER=${DB_USER:-admin}
+      - DB_PASSWORD=${DB_PASSWORD:-admin123}
+      - DB_BUCKET=${DB_BUCKET:-online-booking}
+    depends_on:
+      - couchbase
+    networks:
+      - booking-network
+    restart: unless-stopped
+
+  customer-app:
+    extends:
+      file: ./online-booking-client/docker-compose.yml
+      service: customer-app
+
+  admin-app:
+    extends:
+      file: ./online-booking-client/docker-compose.yml
+      service: admin-app
+
+  nginx-gateway:
+    image: nginx:alpine
+    container_name: nginx-gateway
+    ports:
+      - "80:80"
+      # - "443:443"
+    volumes:
+      - ./online-booking-client/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./online-booking-client/nginx/ssl:/etc/nginx/ssl
+    depends_on:
+      - customer-app
+      - admin-app
+      - server
+    networks:
+      - booking-network
+    restart: unless-stopped
+
+networks:
+  booking-network:
+    driver: bridge
+
+volumes:
+  nginx_ssl:

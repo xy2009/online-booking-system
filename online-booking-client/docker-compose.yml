@@ -5,11 +5,15 @@ services:
   customer-app:
     build:
       context: .
-      dockerfile: apps/customer/Dockerfile
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: customer
     ports:
       - "3000:80"
     environment:
-      - NODE_ENV=production
+        - NODE_ENV=${NODE_ENV:-production}
+        - VITE_APP_CLIENT_ID=${APP_CLIENT_ID:-56LY8OKo2S5u6OLmohAGaDg}
+        - VITE_ENABLE_BACKEND_LOGOUT=${ENABLE_BACKEND_LOGOUT:-true}
     networks:
       - booking-network
     restart: unless-stopped
@@ -18,30 +22,37 @@ services:
   admin-app:
     build:
       context: .
-      dockerfile: apps/admin/Dockerfile
+      dockerfile: Dockerfile
+      args:
+        APP_NAME: admin
     ports:
       - "3001:80"
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=${NODE_ENV:-production}
+      - VITE_SYS_CLIENT_ID=${SYS_CLIENT_ID:-3bXqH2pXQ1Kz8gk2bG7h5g}
+      - VITE_ENABLE_BACKEND_LOGOUT=${ENABLE_BACKEND_LOGOUT:-true}
     networks:
       - booking-network
     restart: unless-stopped
 
-  # Nginx反向代理
-  nginx:
-    image: nginx:alpine
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./nginx/ssl:/etc/nginx/ssl
-    depends_on:
-      - customer-app
-      - admin-app
-    networks:
-      - booking-network
-    restart: unless-stopped
+# # 当前项目使用 Nginx 网关时启用下面的配置
+  # # Nginx 网关
+  # nginx-gateway:
+  #   image: nginx:alpine
+  #   container_name: nginx-gateway
+  #   ports:
+  #     - "80:80"
+  #     # - "443:443"
+  #   volumes:
+  #     - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+  #     - ./nginx/ssl:/etc/nginx/ssl
+  #   depends_on:
+  #     - customer-app
+  #     - admin-app
+  #     - server
+  #   networks:
+  #     - booking-network
+  #   restart: unless-stopped
 
 networks:
   booking-network:

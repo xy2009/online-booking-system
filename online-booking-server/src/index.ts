@@ -5,6 +5,8 @@ import { CouchbaseDB } from "./database/couchbaseUtils";
 
 const bootstrap = async () => {
   
+  logger.info("Starting server...");
+  logger.info(`Connecting to Couchbase...`);
    // 确保 Couchbase 已连接成功
    await CouchbaseDB.instance.connect(); 
   const PORT = process.env.PORT || 4000;

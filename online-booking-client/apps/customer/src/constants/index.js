@@ -24,6 +24,7 @@ export const HTTP_ERROR_MESSAGES = {
 export const ERROR_MESSAGE_KEYS = {
   'Not Authorised': '未授权，请登录',
   'User Not Found': '用户不存在',
+  'this account does not exist': '用户不存在',
   'Invalid Credentials': '用户名或密码错误',
   'User Already Exists': '用户已存在',
   'selected time': '所选时间已预订满，请选择其他时间',

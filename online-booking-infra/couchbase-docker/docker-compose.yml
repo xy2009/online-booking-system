@@ -2,7 +2,7 @@ version: '3.8'
 services:
   couchbase:
     image: couchbase:community-7.2.4
-    container_name: couchbase
+    container_name: couchbase-online-booking-deploy
     ports:
       - 8091-8096:8091-8096 # Web UI, Query, Index, Search, Analytics
       - 11210:11210         # Data node
@@ -12,4 +12,10 @@ services:
     environment:
       - COUCHBASE_ADMINISTRATOR_USERNAME=${COUCHBASE_ADMINISTRATOR_USERNAME:-admin}
       - COUCHBASE_ADMINISTRATOR_PASSWORD=${COUCHBASE_ADMINISTRATOR_PASSWORD:-admin123}
+    networks:
+      - booking-network  
     restart: unless-stopped
+
+networks:
+  booking-network:
+    driver: bridge    

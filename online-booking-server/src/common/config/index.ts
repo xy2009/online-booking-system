@@ -4,10 +4,11 @@ import { getCallerFile } from '../utils/file';
 import { logger } from '../utils/logger';
 
 export const getConfig = () => {
+  const DB_URL  =  `${process.env.DB_TYPE || 'couchbase'}://${process.env.DB_HOST || 'localhost'}`;
   return {
     env: process.env.NODE_ENV || 'development',
     port: process.env.PORT,
-    dbUrl: process.env.DB_URL,
+    dbUrl: DB_URL,
     dbPort: process.env.DB_PORT,
     dbUser: process.env.DB_USER,
     jwtRefreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d',

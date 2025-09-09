@@ -41,4 +41,11 @@
 - **包管理**: pnpm + workspaces
 - **容器化**: Docker + Docker Compose
 
+## 项目启动
+- 使用 docker-compose 实现一键环境部署，环境依赖docker，docker-compose
+- 当前目录根目录下执行`docker-compose up -d`,docker构建容器成功后
+- 浏览器打开管理端：`http://admin.localhost/login`,输入帐密登录
+- 浏览器打开客户端：`http://localhost/login`, 注册或输入帐密登录
+
+
 #### 注：启动参数配置等 详情请进入子项目进行查看READMEN.md
