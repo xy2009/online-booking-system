@@ -130,13 +130,13 @@ WHERE type = "booking";
 BUILD INDEX ON `online-booking`.`business`.`booking`(`idx_booking_type_status`);
 
 CREATE INDEX idx_staff_type_accountId
-ON `online-booking`.`system`.`booking`(type, accountId)
-WHERE type = "booking";
+ON `online-booking`.`system`.`staff`(type, accountId)
+WHERE type = "staff";
 BUILD INDEX ON `online-booking`.`system`.`staff`(`idx_staff_type_accountId`);
 
 CREATE INDEX idx_staff_type_branchId
-ON `online-booking`.`system`.`booking`(type, branchId)
-WHERE type = "booking";
+ON `online-booking`.`system`.`staff`(type, branchId)
+WHERE type = "staff";
 BUILD INDEX ON `online-booking`.`system`.`staff`(`idx_staff_type_branchId`);
 
 

@@ -169,7 +169,7 @@ function Booking() {
 
     if (result.success) {
       toast.success('预订成功！');
-      await bookingStore.fetchBookingHistory(authStore.user()?.userId); // 刷新历史
+      // await bookingStore.fetchBookingHistory(authStore.user()?.userId); // 刷新历史
       // console.log('Booking created:', result.booking);
       navigate('/bookings');
     } else {

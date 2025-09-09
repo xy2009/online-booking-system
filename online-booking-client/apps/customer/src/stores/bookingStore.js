@@ -126,7 +126,7 @@ const createBooking = async (bookingData) => {
     if (ok && success && data.createBooking) {
       // 重置预订状态并清理缓存
       resetBooking();
-
+      await fetchBookingHistory(bookingData.userId);
       return { success: true, booking: data.createBooking };
     } else {
       let errorMsg = message || ERROR_MESSAGES.BOOKING_FAILED;
