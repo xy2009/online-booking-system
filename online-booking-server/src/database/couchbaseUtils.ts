@@ -124,6 +124,10 @@ export class CouchbaseDB {
       scanCap: 10000,   // 限制扫描数量
       profile: 'timings',
       useCBO: true,     // 使用基于成本的优化器
+      // 默认是not_bounded，效率优先，N1QL查询可能不会反映最新数据
+      // request_plus确保查询反映最新数据，但可能稍慢一些
+      // https://docs.couchbase.com/server/current/n1ql/n1ql-language-reference/consistency.html
+      scanConsistency: "request_plus", // 确保读取最新数据
       ...options
     });
   }
